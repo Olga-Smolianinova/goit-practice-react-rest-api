@@ -1,0 +1,37 @@
+.TodoList {
+  margin-top: 30px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 600px;
+  text-align: center;
+}
+.TodoList__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+.TodoList__item--completed {
+  text-decoration: line-through;
+}
+
+.TodoList__text {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+.TodoList__checkbox {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+.TodoList__btn {
+  margin-left: auto;
+  border-radius: 4px;
+  padding: 12px 24px;
+  background-color: indigo;
+  color: white;
+  font-weight: 500;
+}
