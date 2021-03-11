@@ -1,0 +1,16 @@
+.Articles {
+  margin-top: 30px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 600px;
+}
+.Articles__title {
+  text-align: center;
+}
+
+.LoadMoreBtn {
+  text-align: center;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}

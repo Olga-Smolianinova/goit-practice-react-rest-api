@@ -186,7 +186,7 @@ class Draft extends Component {
 
         {/* LOCAL STORAGE И ЖИЗНЕННЫЕ ЦИКЛЫ */}
         {/* Modal. Рендер по условию */}
-        <button type="button" onClick={this.toggleModal}>
+        <button type="button" className="ModalBtn" onClick={this.toggleModal}>
           Open modal window
         </button>
 

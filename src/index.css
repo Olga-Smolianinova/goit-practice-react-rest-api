@@ -59,3 +59,11 @@ p {
 .ColorPicker__option--active {
   transform: scale(1.2);
 }
+
+/* Modal window */
+.ModalBtn {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  /* width: 600px; */
+}
