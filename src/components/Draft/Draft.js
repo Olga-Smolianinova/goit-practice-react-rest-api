@@ -1,43 +1,21 @@
 import React, { Component } from 'react';
 
-import shortId from 'shortid'; //npm для создания уникальных ID
-
 // Components
-// import Counter from './Counter';
-
-// import Dropdown from './Dropdown';
-
-import ColorPicker from './ColorPicker';
-
 import TodoList from './TodoList/TodoList';
 import TodoForm from './TodoForm/TodoForm';
 import TodoFilter from './TodoFilter/TodoFilter';
 
-import initialTodos from './TodoList/todos.json'; //данные для TodoList
 import './TodoList/TodoList.css'; //стили для TodoList
-
-// для тренировки Form
-// import Form from './Form/Form';
 
 // LOCAL STORAGE И ЖИЗНЕННЫЕ ЦИКЛЫ
 import Modal from './Modal/Modal'; //Modal window
 
-// data for ColorPicker
-const colorPickerOptions = [
-  { label: 'red', color: '#F44336' },
-  { label: 'green', color: '#4CAF50' },
-  { label: 'blue', color: '#2196F3' },
-  { label: 'grey', color: '#607D8B' },
-  { label: 'pink', color: '#E91E63' },
-  { label: 'indigo', color: '#3F51B5' },
-];
+import todosApi from '../../api/todos-api'; //import файла, который прописывает логику настроек Api
 
 class Draft extends Component {
   // state for TodoList
   state = {
-    todos: initialTodos,
-
-    // todos: [],
+    todos: [],
 
     // для фильтрации
     filter: '',
@@ -46,20 +24,102 @@ class Draft extends Component {
     showModal: false,
   };
 
+  // ЖИЗНЕННЫЕ ЦИКЛЫ
+  // методы жизненного цикла вызываются без помощи стрелоных функции
+
+  // вызывается один раз при Mount компонета.
+  componentDidMount() {
+    // console.log('Mount component');
+
+    // При вызове делаем запрос с помощью axios и берем начальные данные, которые хранятся на локальном backend, который мы создали с помощью npm json-server и данные которого хранятся в корне проекта в файле db.json
+
+    // вызов функции из файла который прописывает логику настроек Api (todos-api.js)
+    todosApi
+      .fetchTodos()
+
+      .then(todos => this.setState({ todos }))
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  // вызывается после каждого обновления компонента
+  componentDidUpdate(prevProps, prevState) {
+    //обязательно сравниваем предыдущее значение todos c текущим, если неравно, то обновляем все todos. Это делается, чтобы не зациклить компонент
+
+    if (this.state.todos !== prevState.todos) {
+      // console.log('Update todos');
+
+      // при каждом обновлении todos массив todos, приводим к строке и полностью перезаписываем todos  в local Storage
+      localStorage.setItem('todos', JSON.stringify(this.state.todos));
+    }
+  }
+
   // во время submit TodoForm нужно получить из нее данные, чтобы добавить  еще одну todos с ее текстом. Передаем этом метод с помощью prop для TodoForm
   addTodo = text => {
     // console.log(text);
 
     // делаем todos, и добавляем ее в state
-    const todo = {
-      id: shortId.generate(), //присваиваем уникальный ID
+    const todoData = {
+      // id: shortId.generate(), //ID не нужен, их сделает backend
       text,
       completed: false,
     };
+
+    // перед добавлением сперва делаем запрос. в параметрах url,  и data, где указан шаблон ключей для отрисовки
+
+    // вызов функции из файла который прописывает логику настроек Api (todos-api.js)
+    todosApi.addTodo(todoData).then(todo => {
+      this.setState(({ todos }) => ({
+        todos: [...todos, todo],
+      }));
+    });
+
+    // before axios
     // для обновления state, когда мы хотим в него что-либо добавить, сначала делаем новый массив, в который распыляем старый, и добавляем новый элемент в начало или конец массива [...старый[], элемент]
-    this.setState(({ todos }) => ({
-      todos: [todo, ...todos],
-    }));
+    // this.setState(({ todos }) => ({
+    //   todos: [todo, ...todos],
+    // }));
+  };
+
+  // для удаления элемента в TodoList при onClick на кнопку. Обращаемся к id элемента.
+  deleteTodo = todoId => {
+    todosApi.deleteTodo(todoId).then(() => {
+      this.setState(prevState => ({
+        todos: prevState.todos.filter(todo => todo.id !== todoId), //берем предыдущий todos и отфильтровываем все элементы, кроме того у которого id совпадает
+      }));
+    });
+
+    // before axios
+    // this.setState(prevState => ({
+    //   todos: prevState.todos.filter(todo => todo.id !== todoId), //берем предыдущий todos и отфильтровываем все элементы, кроме того у которого id совпадает
+    // }));
+  };
+
+  //checkbox когда хотим что-либо обновить в коллекции, не изменяя ее длины. Сравниваем по идентификаторам, если совпало - заменяем, если нет - возвращается то, что было
+  toggleCompleted = todoId => {
+    //   console.log(todoId);
+
+    // находим id того элемента на котором кликнули и вытягиваем его ключ completed
+    const todo = this.state.todos.find(({ id }) => id === todoId);
+    const { completed } = todo;
+    const update = { completed: !completed };
+
+    // делаем запрос, в парметрах указываем url и в каком поле какое значение мы хотим изменить, изменяем ключ completed на противоположное
+    todosApi.updateTodo(todoId, update).then(updatedTodo => {
+      this.setState(({ todos }) => ({
+        todos: todos.map(todo =>
+          todo.id === updatedTodo.id ? updatedTodo : todo,
+        ),
+      }));
+    });
+
+    // before axios
+    // this.setState(({ todos }) => ({
+    //   todos: todos.map(todo =>
+    //     todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
+    //   ),
+    // }));
   };
 
   // для фильтрации. для передачи данныx при onChange
@@ -81,71 +141,10 @@ class Draft extends Component {
     );
   };
 
-  // для удаления элемента в TodoList при onClick на кнопку. Обращаемся к id элемента.
-  deleteTodo = todoId => {
-    this.setState(prevState => ({
-      todos: prevState.todos.filter(todo => todo.id !== todoId), //берем предыдущий todos и отфильтровываем все элементы, кроме того у которого id совпадает
-    }));
-  };
-
   // чтобы при отравке (submit) формы получить доступ к state из Form.js. Это можно сделать через props. В data прокидываются ключи name,tag из state
   formSubmitHandler = data => {
     console.log(data);
   };
-
-  //checkbox когда хотим что-либо обновить в коллекции, не изменяя ее длины. Сравниваем по идентификаторам, если совпало - заменяем, если нет - возвращается то, что было
-  toggleCompleted = todoId => {
-    //   console.log(todoId);
-
-    //   this.setState(prevState => ({
-    //     todos: prevState.todos.map(todo => {
-    //       if (todo.id === todoId) {
-    //         return {
-    //           ...todo,
-    //           completed: !todo.completed,
-    //         };
-    //       }
-    //       return todo;
-    //     }),
-    //   }));
-
-    // либо можно записать с помощью тернарного оператора
-    this.setState(({ todos }) => ({
-      todos: todos.map(todo =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    }));
-  };
-
-  // LOCAL STORAGE И ЖИЗНЕННЫЕ ЦИКЛЫ
-  // методы жизненного цикла вызываются без помощи стрелоных функции
-
-  // вызывается после каждого обновления компонента
-  componentDidUpdate(prevProps, prevState) {
-    //обязательно сравниваем предыдущее значение todos c текущим, если неравно, то обновляем все todos. Это делается, чтобы не зациклить компонент
-    if (this.state.todos !== prevState.todos) {
-      // console.log('Update todos');
-
-      // при каждом обновлении todos массив todos, приводим к строке и полностью перезаписываем todos  в local Storage
-      localStorage.setItem('todos', JSON.stringify(this.state.todos));
-    }
-  }
-
-  // вызывается один раз при Mount компонета. Удобен, чтобы взять начальные данные, которые хранятся в localStorage
-  componentDidMount() {
-    // console.log('Mount component');
-
-    const todos = localStorage.getItem('todos');
-    // console.log(todos);
-
-    const parsedTodos = JSON.parse(todos);
-    // console.log(parsedTodos);
-
-    //сохраняем в localStorage новые todos поверх предыдущих и проверка на null. если есть todos, т.е. массив не пустой, то пишем их в  localStorage
-    if (parsedTodos) {
-      this.setState({ todos: parsedTodos });
-    }
-  }
 
   // работа Модального окна. Открытие-закрытие в зависимости от предыдущего значения
   toggleModal = () => {
@@ -168,15 +167,6 @@ class Draft extends Component {
 
     return (
       <div>
-        {/* Counter */}
-        {/* <Counter /> */}
-
-        {/* Dropdown Menu */}
-        {/* <Dropdown /> */}
-
-        {/* ColorPicker */}
-        <ColorPicker options={colorPickerOptions} />
-
         {/* Form for TodoList */}
         <TodoForm onSubmit={this.addTodo} />
         {/* для фильтрации */}
@@ -193,9 +183,6 @@ class Draft extends Component {
           onDeleteTodo={this.deleteTodo}
           onToggleCompleted={this.toggleCompleted}
         />
-
-        {/* Form. чтобы при отравке (submit) формы получить доступ к state из Form.js добавляем prop onSubmit методом для этого */}
-        {/* <Form onSubmit={this.formSubmitHandler} /> */}
 
         {/* LOCAL STORAGE И ЖИЗНЕННЫЕ ЦИКЛЫ */}
         {/* Modal. Рендер по условию */}

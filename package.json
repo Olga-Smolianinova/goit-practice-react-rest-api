@@ -1,12 +1,13 @@
 {
-  "name": "goit-react-hw-02-feedback",
+  "name": "goit-practice-react-rest-api",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Olga-Smolianinova.github.io/goit-react-hw-02-feedback",
+  "homepage": "https://Olga-Smolianinova.github.io/goit-practice-react-rest-api",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.0",
+    "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "gh-pages": "^3.1.0",
     "json-server": "^0.16.3",
@@ -22,6 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "api-server": "json-server --delay 200 --watch db.json",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
