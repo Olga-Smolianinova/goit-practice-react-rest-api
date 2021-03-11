@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/goit-practice-react-rest-api/static/css/main.2ed3dde3.chunk.css",
+    "main.js": "/goit-practice-react-rest-api/static/js/main.179aabf1.chunk.js",
+    "main.js.map": "/goit-practice-react-rest-api/static/js/main.179aabf1.chunk.js.map",
+    "runtime-main.js": "/goit-practice-react-rest-api/static/js/runtime-main.f56c9be0.js",
+    "runtime-main.js.map": "/goit-practice-react-rest-api/static/js/runtime-main.f56c9be0.js.map",
+    "static/css/2.de71bbd8.chunk.css": "/goit-practice-react-rest-api/static/css/2.de71bbd8.chunk.css",
+    "static/js/2.894818e0.chunk.js": "/goit-practice-react-rest-api/static/js/2.894818e0.chunk.js",
+    "static/js/2.894818e0.chunk.js.map": "/goit-practice-react-rest-api/static/js/2.894818e0.chunk.js.map",
+    "index.html": "/goit-practice-react-rest-api/index.html",
+    "static/css/2.de71bbd8.chunk.css.map": "/goit-practice-react-rest-api/static/css/2.de71bbd8.chunk.css.map",
+    "static/css/main.2ed3dde3.chunk.css.map": "/goit-practice-react-rest-api/static/css/main.2ed3dde3.chunk.css.map",
+    "static/js/2.894818e0.chunk.js.LICENSE.txt": "/goit-practice-react-rest-api/static/js/2.894818e0.chunk.js.LICENSE.txt",
+    "static/media/delete.5575697b.svg": "/goit-practice-react-rest-api/static/media/delete.5575697b.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f56c9be0.js",
+    "static/css/2.de71bbd8.chunk.css",
+    "static/js/2.894818e0.chunk.js",
+    "static/css/main.2ed3dde3.chunk.css",
+    "static/js/main.179aabf1.chunk.js"
+  ]
+}
