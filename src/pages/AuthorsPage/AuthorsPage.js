@@ -7,7 +7,7 @@ import { NavLink, Route } from 'react-router-dom'; //для создания в�
 import axios from 'axios';
 
 // Components
-import AuthorBooks from '../../components/AuthorBooks'; // import компонента для отрисовки на одной странице информации о книгах автора
+import BookList from '../../components/BookList'; // import компонента для отрисовки на одной странице информации о книгах автора
 
 class AuthorsPage extends Component {
   state = {
@@ -28,8 +28,6 @@ class AuthorsPage extends Component {
   render() {
     return (
       <>
-        <h1>This is AUTHORS PAGE</h1>
-
         <ul>
           {this.state.authors.map(author => (
             <li key={author.id}>
@@ -64,7 +62,10 @@ class AuthorsPage extends Component {
             // чтобы не выдавало ошибку, добавляем условие, если массив authorBooks непустой
             return (
               authorBooks && (
-                <AuthorBooks {...props} books={authorBooks.books} />
+                <>
+                  <h2>Книги автора: {authorBooks.name}</h2>
+                  <BookList {...props} books={authorBooks.books} />
+                </>
               )
             );
             // как было до, без условия

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import axios from 'axios';
 
+import routes from '../../routes';
+
 class BookDetailsPage extends Component {
   state = {
     // book: null,
@@ -30,12 +32,42 @@ class BookDetailsPage extends Component {
       ...response.data,
     });
   }
+
+  // Методы
+  //  Клик по Кнопке "Вернуться назад"
+  handleButtonBack = () => {
+    const { location, history } = this.props;
+    // console.log(location);
+    // console.log(location.state);
+    // console.log(location.state.from);
+
+    // если пользователь напрямую перешел на страницу одной книге, это первая страница - при клике "Вернуться назад" будет ошибка т.к. location.state.from - undefined. В этом случае добавляем проверку
+
+    // новый метод 2020: optional chaining (?.) - оператор state и from, || - если нет, то перекинь на routes.books
+    history.push(location?.state?.from || routes.books);
+
+    // (oldSchool метод)
+    //     if (location.state && location.state.from) {
+    //       return history.push(location.state.from);
+    //  }
+
+    // history.push(routes.books);
+
+    // При клике кладем новую запись в location (метод push - добавить новую, replace - заменить старую)  и возвращаемся обратно откуда были перенаправлены на текущую страницу
+    history.push(location.state.from);
+  };
+
   render() {
     const { descr, genre, imgUrl, title, author } = this.state;
 
     return (
-      <>
+      <div>
         <h1>THIS IS Book Detail Page {this.props.match.params.bookId}</h1>
+
+        {/* Кнопка "Вернуться назад". При клике кладем новую запись в location (метод push - добавить новую, replace - заменить старую)  и возвращаемся обратно на /books */}
+        <button type="button" onClick={this.handleButtonBack}>
+          Вернуться назад
+        </button>
 
         {/* Информация о книге */}
         <img src={imgUrl} alt={title} />
@@ -48,7 +80,7 @@ class BookDetailsPage extends Component {
 
         {/* рендер по условию, если есть автор */}
         {author && <p>Автор: {author.name}</p>}
-      </>
+      </div>
     );
   }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-// import './index.css';
+import './index.css';
 import './styles/base.scss';
 
 import 'modern-normalize/modern-normalize.css'; //подключение стилей для normalize
